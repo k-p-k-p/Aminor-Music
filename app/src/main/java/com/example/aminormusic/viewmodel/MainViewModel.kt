@@ -1,5 +1,6 @@
 package com.example.aminormusic.viewmodel
 
+import SearchScreen
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -11,7 +12,7 @@ import  com.example.aminormusic.ui.components.SuperTopAppBar
 import com.example.aminormusic.ui.components.SuperBottomAppBar
 import com.example.aminormusic.ui.screens.HomeScreen
 import com.example.aminormusic.ui.screens.ProfileScreen
-import com.example.aminormusic.ui.screens.SearchScreen
+//import com.example.aminormusic.ui.screens.SearchScreen
 import com.example.aminormusic.ui.screens.SettingsScreen
 import com.example.aminormusic.ui.screens.WishlistScreen
 

@@ -7,6 +7,17 @@ import android.net.Uri
 class MusicPlayer(private val context: Context) {
 
     private var mediaPlayer: MediaPlayer? = null
+    private var playlist: List<String> = emptyList()
+    private var currentIndex: Int = -1
+
+    fun setPlaylist(songs: List<String>, startIndex: Int = 0) {
+        playlist = songs
+        currentIndex = startIndex
+        // Initialize player if necessary
+        if (playlist.isNotEmpty()) {
+            playMusic(playlist[currentIndex])
+        }
+    }
 
     fun playMusic(previewUrl: String) {
         // Release any existing media player
@@ -17,6 +28,28 @@ class MusicPlayer(private val context: Context) {
             setDataSource(context, Uri.parse(previewUrl))
             setOnPreparedListener { it.start() }
             prepareAsync()
+        }
+    }
+
+    fun pauseMusic() {
+        mediaPlayer?.pause()
+    }
+
+    fun resumeMusic() {
+        mediaPlayer?.start()
+    }
+
+    fun playPreviousSong() {
+        if (playlist.isNotEmpty() && currentIndex > 0) {
+            currentIndex--
+            playMusic(playlist[currentIndex])
+        }
+    }
+
+    fun playNextSong() {
+        if (playlist.isNotEmpty() && currentIndex < playlist.size - 1) {
+            currentIndex++
+            playMusic(playlist[currentIndex])
         }
     }
 
