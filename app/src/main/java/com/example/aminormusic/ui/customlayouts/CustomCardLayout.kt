@@ -64,16 +64,16 @@ fun CustomCardLayout(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
+                        horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        IconButton(onClick = { onPreviousButtonClick() }) {
+                        /*IconButton(onClick = { onPreviousButtonClick() }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_previous),
                                 contentDescription = "Previous",
                                 tint = Color.White
                             )
-                        }
+                        }*/
                         AnimatedVisibility(
                             visible = item.preview == currentPlaying && isPlaying,
                             enter = fadeIn() + expandIn(expandFrom = Alignment.Center),
@@ -113,13 +113,13 @@ fun CustomCardLayout(
                                 )
                             }
                         }
-                        IconButton(onClick = { onNextButtonClick() }) {
+                        /*IconButton(onClick = { onNextButtonClick() }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.next_arrow_forward_svgrepo_com),
                                 contentDescription = "Next",
                                 tint = Color.White
                             )
-                        }
+                        }*/
                     }
                 }
             }
