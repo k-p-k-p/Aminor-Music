@@ -57,7 +57,7 @@ fun MainViewModel() {
                 }
 
                 // Display the collapsed music player if there is a currently playing track
-                if (results?.data?.isNotEmpty() == true) {
+                /*if (results?.data?.isNotEmpty() == true) {
                     CollapsedMusicPlayer(
                         albumArtUrl = results!!.data[currentPlayingIndex].album.cover_small,
                         title = results!!.data[currentPlayingIndex].title,
@@ -69,7 +69,7 @@ fun MainViewModel() {
                         onPreviousClick = {searchViewModel.playPreviousSong()},
                         onNextClick = {searchViewModel.playNextSong()}
                     )
-                }
+                }*/
             }
         }
     )
