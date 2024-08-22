@@ -61,6 +61,8 @@ dependencies {
 //    implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.material3.android)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.constraintlayout)
 //    implementation(libs.androidx.ui.desktop)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -80,5 +82,10 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     //coil
     implementation("io.coil-kt:coil-compose:2.7.0")
+
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0")
+
+    // Navigation for Jetpack Compose
+    implementation ("androidx.navigation:navigation-compose:2.7.3")
 
 }

@@ -1,6 +1,6 @@
 package com.example.aminormusic.viewmodel
 
-import CollapsedMusicPlayer
+import ExpandedMusicPlayer
 import SearchScreen
 //import SearchViewModel
 import aminor.viewmodel.SearchViewModel
@@ -19,7 +19,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.aminormusic.ui.components.SuperTopAppBar
 import com.example.aminormusic.ui.components.SuperBottomAppBar
 import com.example.aminormusic.ui.screens.HomeScreen
-import com.example.aminormusic.ui.screens.ProfileScreen
 import com.example.aminormusic.ui.screens.*
 import com.example.aminormusic.ui.screens.SettingsScreen
 import com.example.aminormusic.ui.screens.WishlistScreen
@@ -36,41 +35,21 @@ fun MainViewModel() {
     val isPlaying by searchViewModel.isPlaying.collectAsState()
     val results by searchViewModel.results.collectAsState()
 
-    Scaffold(
-        topBar = { SuperTopAppBar(navController) },
-        bottomBar = { SuperBottomAppBar(navController) },
-        content = { innerPadding ->
-            Box(modifier = Modifier.padding(innerPadding)) {
-                NavHost(
-                    navController = navController,
-                    startDestination = "home",
-                    Modifier.fillMaxSize()
-                ) {
-                    composable("home") { HomeScreen() }
-                    composable("search") {
-                        // Pass the searchViewModel to SearchScreen
-                        SearchScreen(searchViewModel = searchViewModel)
-                    }
-                    composable("wishlist") { WishlistScreen() }
-                    composable("profile") { ProfileScreen() }
-                    composable("settings") { SettingsScreen() }
-                }
-
-                // Display the collapsed music player if there is a currently playing track
-                /*if (results?.data?.isNotEmpty() == true) {
-                    CollapsedMusicPlayer(
-                        albumArtUrl = results!!.data[currentPlayingIndex].album.cover_small,
-                        title = results!!.data[currentPlayingIndex].title,
-                        artistName = results!!.data[currentPlayingIndex].artist.name,
-                        isPlaying = isPlaying,
-                        onPlayPauseClick = {
-                            if (isPlaying) searchViewModel.pauseMusic() else searchViewModel.resumeMusic()
-                        },
-                        onPreviousClick = {searchViewModel.playPreviousSong()},
-                        onNextClick = {searchViewModel.playNextSong()}
-                    )
-                }*/
-            }
+    NavHost(
+        navController = navController,
+        startDestination = "welcome",
+        Modifier.fillMaxSize()
+    ) {
+        composable("welcome"){ WelcomeScreen(navController)}
+        composable("login") { LogInScreen(navController)}
+        composable("signup"){ SignUpScreen(navController)}
+        composable("home") { HomeScreen(navController) }
+        composable("search") {
+            // Pass the searchViewModel to SearchScreen
+            SearchScreen(navController)
         }
-    )
+        composable("wishlist") { WishlistScreen(navController) }
+        composable("profile") { ProfileScreen(navController) }
+        composable("settings") { SettingsScreen(navController) }
+    }
 }

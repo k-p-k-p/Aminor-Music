@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
@@ -32,6 +33,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -45,12 +47,21 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.aminormusic.model.apicallerclasses.FetchData
@@ -58,96 +69,89 @@ import com.example.aminormusic.model.apidataclasses.Album
 import com.example.aminormusic.model.apidataclasses.Artist
 import kotlinx.coroutines.launch
 
+
+@Preview(showBackground = true)
 @Composable
-fun HomeScreen() {
-    Surface(modifier = Modifier.fillMaxSize()) {
-        MyApp()
-    }
+fun DefaultPreview() {
+    HomeScreen(rememberNavController())
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
-fun MyApp() {
-    MaterialTheme(
-        colorScheme = lightColorScheme(
-            primary = Color.White,
-            onPrimary = Color.Black,
-            surface = Color.White,
-            onSurface = Color.Black
-        )
-    ) {
+fun HomeScreen(navController: NavHostController) {
         Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.fillMaxHeight()
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Home,
-                                contentDescription = "Home Icon"
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(text = "Welcome back!")
-                        }
-                    },
-                    actions = {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Notifications,
-                                contentDescription = "Notifications Icon",
-                                modifier = Modifier.padding(horizontal = 8.dp)
-                            )
-                            Icon(
-                                imageVector = Icons.Default.Settings,
-                                contentDescription = "Settings Icon",
-                                modifier = Modifier.padding(horizontal = 8.dp)
-                            )
-                            Icon(
-                                imageVector = Icons.Default.AccountCircle,
-                                contentDescription = "Account Icon",
-                                modifier = Modifier.padding(horizontal = 8.dp)
-                            )
-                        }
-                    },
-                )
-            },
             bottomBar = {
                 BottomAppBar(
-                    backgroundColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
+                    backgroundColor = Color.Black,
+                    contentColor = Color.White,
+                    modifier = Modifier.shadow(0.dp)
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(imageVector = Icons.Default.Favorite, contentDescription = "Favorite Icon")
-                        Icon(imageVector = Icons.Default.Share, contentDescription = "Share Icon")
-                        Icon(imageVector = Icons.Default.Search, contentDescription = "Search Icon")
+                        IconButton(
+                            onClick = { navController.navigate("home") },
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Home,
+                                contentDescription = "Home Icon",
+                                tint = Color.White,
+                                modifier = Modifier.size(28.dp)
+                            )
+                        }
+                        IconButton(
+                            onClick = { navController.navigate("search") }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = "Search Icon",
+                                tint = Color.White,
+                                modifier = Modifier.size(28.dp)
+                            )
+                        }
+                        IconButton(
+                            onClick = { navController.navigate("wishlist") }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Favorite,
+                                contentDescription = "Favorite Icon",
+                                tint = Color.White,
+                                modifier = Modifier.size(28.dp)
+                            )
+                        }
                     }
                 }
             },
             content = { innerPadding ->
-                Box(modifier = Modifier.padding(innerPadding)) {
-                    MainContent()
+                Box(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize()
+                        .background(
+                            brush = Brush.linearGradient(
+                                colors = listOf(
+                                    Color(0xFF0e3135),
+                                    Color(0xFF000000),
+                                    Color(0xFF000000),
+                                    Color(0xFF000000),
+                                    Color(0xFF000000)
+                                ),
+                                start = Offset(0f, 0f),
+                                end = Offset(0f, Float.POSITIVE_INFINITY),
+                                tileMode = TileMode.Clamp
+                            )
+                        )
+                ) {
+                    MainContent(navController)
                 }
             }
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    MyApp()
-}
 
 @Composable
-fun MainContent() {
+fun MainContent(navController: NavHostController) {
     val scope = rememberCoroutineScope()
     var artists by remember { mutableStateOf<List<Artist>>(emptyList()) }
     var albums by remember { mutableStateOf<List<Album>>(emptyList()) }
@@ -169,20 +173,96 @@ fun MainContent() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black)
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
-        Text(text = "Continue Listening", color = Color.White)
+        // Content from the top app bar
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(
+                    onClick = { navController.navigate("profile") },
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = "Account Icon",
+                        tint = Color.White,
+                        modifier = Modifier.size(28.dp)
+                    )
+
+                }
+                Text(
+                    text = "Aminor Music",
+                    fontSize = 20.sp,
+                    color = Color(0xFFFFFFFF),
+                )
+            }
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(
+                    onClick = { /* Handle Notifications Icon click */ },
+                    modifier = Modifier.padding(horizontal = 4.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Notifications,
+                        contentDescription = "Notifications Icon",
+                        tint = Color.White,
+                        modifier = Modifier.size(26.dp)
+                    )
+                }
+                IconButton(
+                    onClick = { navController.navigate("settings") },
+                    modifier = Modifier.padding(horizontal = 4.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = "Settings Icon",
+                        tint = Color.White,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "Continue listening",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Start,
+            color = Color(0xFFFFFFFF)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
         ArtistRow(artists = artists, albums = albums)
         Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "Your Top Mixes", color = Color.White)
+        Text(
+            text = "Your top mixes",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Start,
+            color = Color(0xFFFFFFFF)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
         ArtistRow(artists = artists, albums = albums)
         Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "Based on your recent listening", color = Color.White)
+        Text(
+            text = "Based on your listening",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Start,
+            color = Color(0xFFFFFFFF)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
         ArtistRow(artists = artists, albums = albums)
     }
 }
+
+
 
 @Composable
 fun ArtistRow(artists: List<Artist>, albums: List<Album>) {
@@ -191,17 +271,19 @@ fun ArtistRow(artists: List<Artist>, albums: List<Album>) {
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(artists.size) { index ->
-            ArtistCard(album = albums[index])
+            ArtistCard(album = albums[index] , artist = artists[index])
         }
     }
 }
 
+
+
 @Composable
-fun ArtistCard(album: Album) {
+fun ArtistCard(album: Album , artist : Artist) {
     Card(
         modifier = Modifier
-            .width(120.dp)
-            .height(150.dp),
+            .width(150.dp)
+            .height(190.dp),
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.Black,
@@ -210,7 +292,8 @@ fun ArtistCard(album: Album) {
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.Start
         ) {
             Image(
                 painter = rememberAsyncImagePainter(
@@ -220,16 +303,27 @@ fun ArtistCard(album: Album) {
                 ),
                 contentDescription = "Album Picture",
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier
+                    .size(150.dp)
             )
             Text(
-                text = album.title,  // Display the album title here
+                text = if (album.title.length > 18) album.title.take(18) + "..." else album.title,
                 color = Color.White,
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Start,
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color.Black)
-                    .padding(4.dp)
+                    .padding(1.dp)
+            )
+
+            Text(
+                text = artist.name,  // Display the album title here
+                color = Color.White,
+                textAlign = TextAlign.Start,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.Black)
+                    .padding(1.dp)
             )
         }
     }
