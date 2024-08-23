@@ -35,198 +35,204 @@ import com.example.aminormusic.viewmodel.ProfileViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 
-    @Composable
-    fun SignUpScreen(navController: NavHostController , viewModel: ProfileViewModel = viewModel()) {
-        var passwordVisible by remember { mutableStateOf(false) }
-        Box(
+@Composable
+fun SignUpScreen(navController: NavHostController, viewModel: ProfileViewModel = viewModel()) {
+    var passwordVisible by remember { mutableStateOf(false) }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF121111))
+    ) {
+
+        Column(
             modifier = Modifier
-                .fillMaxSize() // Fills the entire available space
-                .background(Color(0xFF121111)) // Replace with your desired color
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-
-            Column(
+            // Logo
+            Image(
+                painter = painterResource(id = R.drawable.aminor_logo),
+                contentDescription = null,
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                // Logo
-                Image(
-                    painter = painterResource(id = R.drawable.aminor_logo), // Replace with your drawable resource
-                    contentDescription = null,
-                    modifier = Modifier
-                        .width(275.dp)
-                        .height(215.dp),
-                    contentScale = ContentScale.Fit
+                    .width(275.dp)
+                    .height(215.dp),
+                contentScale = ContentScale.Fit
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // "Sign Up" text
+            Text(
+                text = "Sign Up",
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .width(355.dp)
+                    .height(36.dp),
+                textAlign = TextAlign.Center,
+                color = Color(0xFFFFFFFF)
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Email text field
+            OutlinedTextField(
+                value = viewModel.email,
+                onValueChange = { viewModel.onEmailChange(it) },
+                label = { Text("Email") },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_email),
+                        contentDescription = null,
+                        modifier = Modifier.size(26.dp),
+                        tint = Color(0xFFAAAAAA)
+                    )
+                },
+                modifier = Modifier
+                    .width(340.dp)
+                    .height(59.dp),
+                shape = RoundedCornerShape(8.dp),
+                textStyle = TextStyle(
+                    color = Color(0xFFFFFFFF),
+                    fontSize = 16.sp
                 )
+            )
 
-                Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-                // "Sign Up" text
+            // Password text field
+            OutlinedTextField(
+                value = viewModel.password,
+                onValueChange = { viewModel.onPasswordChange(it) },
+                label = { Text("Password") },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_padlock),
+                        contentDescription = null,
+                        Modifier.size(28.dp),
+                        tint = Color(0xFFAAAAAA)
+                    )
+                },
+                trailingIcon = {
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(
+                            painter = painterResource(id = if (passwordVisible) R.drawable.ic_hide else R.drawable.ic_show),
+                            contentDescription = if (passwordVisible) "Hide password" else "Show password",
+                            Modifier.size(26.dp),
+                            tint = Color(0xFFAAAAAA)
+                        )
+                    }
+                },
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                modifier = Modifier
+                    .width(340.dp)
+                    .height(59.dp),
+                shape = RoundedCornerShape(8.dp),
+                textStyle = TextStyle(
+                    color = Color(0xFFFFFFFF),
+                    fontSize = 16.sp
+                )
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Sign Up button
+            Button(
+                onClick = {
+                    viewModel.onSignUpClick() // Trigger Firebase sign-up
+                    if (viewModel.isLoggedIn) {
+                        navController.navigate("home") // Navigate to the home screen if sign-up is successful
+                    }
+                },
+                modifier = Modifier
+                    .width(340.dp)
+                    .height(59.dp),
+                shape = RoundedCornerShape(24.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF06A0B5))
+            ) {
                 Text(
                     text = "Sign Up",
-                    fontSize = 28.sp, // Adjusted to fit the required width and height
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .width(355.dp)
-                        .height(36.dp),
-                    textAlign = TextAlign.Center,
+                    fontSize = 20.sp,
                     color = Color(0xFFFFFFFF)
                 )
+            }
 
-                Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-                // Email text field
-                OutlinedTextField(
-                    value = viewModel.email,
-                    onValueChange = { viewModel.onEmailChange(it) },
-                    label = { Text("Email") },
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_email),
-                            contentDescription = null,
-                            modifier = Modifier.size(26.dp),
-                            tint = Color(0xFFAAAAAA)
-                        )
-                    },
-                    modifier = Modifier
-                        .width(340.dp)
-                        .height(59.dp),
-                    shape = RoundedCornerShape(8.dp),
-                    textStyle = TextStyle(
-                        color = Color(0xFFFFFFFF), // Set your desired text color here
-                        fontSize = 16.sp // You can also set other text style properties here
-                    )
-
+            // Divider with "or continue with" text
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.width(353.dp)
+            ) {
+                Divider(modifier = Modifier.weight(1f))
+                Text(
+                    text = "or continue with",
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    color = Color(0xFFFFFFFF)
                 )
+                Divider(modifier = Modifier.weight(1f))
+            }
 
-                Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-                // Password text field
-                OutlinedTextField(
-                    value = viewModel.password,
-                    onValueChange = { viewModel.onPasswordChange(it) },
-                    label = { Text("Password") },
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_padlock),
-                            contentDescription = null,
-                            Modifier.size(28.dp),
-                            tint = Color(0xFFAAAAAA)
-                        )
-                    },
-                    trailingIcon = {
-                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                            Icon(
-                                painter = painterResource(id = if (passwordVisible) R.drawable.ic_hide else R.drawable.ic_show),
-                                contentDescription = if (passwordVisible) "Hide password" else "Show password",
-                                Modifier.size(26.dp),
-                                tint = Color(0xFFAAAAAA)
-                            )
-                        }
-                    },
-                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    modifier = Modifier
-                        .width(340.dp)
-                        .height(59.dp),
-                    shape = RoundedCornerShape(8.dp),
-                    textStyle = TextStyle(
-                        color = Color(0xFFFFFFFF), // Set your desired text color here
-                        fontSize = 16.sp // You can also set other text style properties here
+            // Google, Facebook, Apple buttons
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                IconButton(onClick = { /* Handle Google sign-in */ }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_google),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clip(CircleShape)
                     )
-                )
+                }
+                IconButton(onClick = { /* Handle Facebook sign-in */ }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_facebook),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clip(CircleShape)
+                    )
+                }
+                IconButton(onClick = { /* Handle Apple sign-in */ }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_apple),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clip(CircleShape),
+                        colorFilter = ColorFilter.tint(Color(0xFFFFFFFF))
+                    )
+                }
+            }
 
-                Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-                // Sign Up button
-                Button(
-                    onClick = {  },
-                    modifier = Modifier
-                        .width(340.dp)
-                        .height(59.dp),
-                    shape = RoundedCornerShape(24.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF06A0B5)) // Adjust color as needed
-                ) {
+            // Already have an account button
+            Row {
+                TextButton(onClick = { navController.navigate("login") }) {
                     Text(
-                        text = "Sign Up",
-                        fontSize = 20.sp,
+                        text = "Already have an account? ",
+                        fontSize = 14.sp,
                         color = Color(0xFFFFFFFF)
                     )
-                }
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                // Divider with "or continue with" text
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.width(353.dp)
-                ) {
-                    Divider(modifier = Modifier.weight(1f))
                     Text(
-                        text = "or continue with",
-                        modifier = Modifier.padding(horizontal = 8.dp),
-                        color = Color(0xFFFFFFFF)
+                        text = "Log In",
+                        fontSize = 14.sp,
+                        color = Color(0xFF06A0B5)
                     )
-                    Divider(modifier = Modifier.weight(1f))
-                }
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                // Google, Facebook, Apple buttons
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(20.dp)
-                ) {
-                    IconButton(onClick = { /* Handle Google sign-in */ }) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_google),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(50.dp)
-                                .clip(CircleShape)
-                        )
-                    }
-                    IconButton(onClick = { /* Handle Facebook sign-in */ }) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_facebook),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(50.dp)
-                                .clip(CircleShape)
-                        )
-                    }
-                    IconButton(onClick = { /* Handle Apple sign-in */ }) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_apple),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(50.dp)
-                                .clip(CircleShape),
-                            colorFilter = ColorFilter.tint(Color(0xFFFFFFFF))
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                // already have an account button
-                Row {
-                    TextButton(onClick = { navController.navigate("login") }) {
-                        Text(
-                            text = "Already have an account? ",
-                            fontSize = 14.sp,
-                            color = Color(0xFFFFFFFF)
-                        )
-                        Text(
-                            text = "Log In",
-                            fontSize = 14.sp,
-                            color = Color(0xFF06A0B5) // Adjust color as needed
-                        )
-                    }
                 }
             }
         }
     }
+}
+
 
 
 @Preview(showBackground = true)

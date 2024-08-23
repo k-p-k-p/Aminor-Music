@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -63,6 +64,7 @@ dependencies {
     implementation(libs.androidx.material3.android)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.firebase.auth)
 //    implementation(libs.androidx.ui.desktop)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -87,5 +89,10 @@ dependencies {
 
     // Navigation for Jetpack Compose
     implementation ("androidx.navigation:navigation-compose:2.7.3")
+
+    implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
+    implementation (libs.google.firebase.auth)
+    implementation ("com.google.firebase:firebase-firestore")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.1")
 
 }

@@ -15,12 +15,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -47,7 +51,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun ProfileScreen(navController: NavHostController,viewModel: ProfileViewModel = viewModel()) {
+fun ProfileScreen(navController: NavHostController, viewModel: ProfileViewModel = viewModel()) {
     Surface(modifier = Modifier.fillMaxSize()) {
         Box(
             modifier = Modifier
@@ -68,7 +72,7 @@ fun ProfileScreen(navController: NavHostController,viewModel: ProfileViewModel =
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp), // Padding inside the Box
+                    .padding(16.dp),
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     IconButton(
@@ -80,65 +84,84 @@ fun ProfileScreen(navController: NavHostController,viewModel: ProfileViewModel =
                             Modifier.size(30.dp),
                             tint = Color(0xFFFFFFFF)
                         )
-
                     }
                 }
-                    Column(
+                Column(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.aminor_logo),
+                        contentDescription = "Jetpack compose image",
+                        modifier = Modifier.size(150.dp)
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = "Profile",
+                        fontSize = 30.sp,
+                        fontWeight = FontWeight.Bold,
                         modifier = Modifier
-                            .padding(16.dp)
-                            .fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                            .width(355.dp)
+                            .height(36.dp),
+                        textAlign = TextAlign.Start,
+                        color = Color(0xFFFFFFFF)
+                    )
+                    // Display user data
+                    DisplayField(label = "Name", value = viewModel.name)
+                    DisplayField(label = "Email ID", value = viewModel.email)
+                    DisplayField(label = "Country", value = viewModel.country)
+                    DisplayField(label = "Phone Number", value = viewModel.phoneNumber)
+                    Row(
+                        horizontalArrangement = Arrangement.Start,
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.aminor_logo),
-                            contentDescription = "Jetpack compose image",
-                            modifier = Modifier.size(150.dp)
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = " Profile",
-                            fontSize = 30.sp, // Adjusted to fit the required width and height
-                            fontWeight = FontWeight.Bold,
+                        Button(
+                            onClick = {
+                                viewModel.onLogoutClick()
+                                navController.navigate("login") // Navigate to login screen after logout
+                            },
                             modifier = Modifier
-                                .width(355.dp)
-                                .height(36.dp),
-                            textAlign = TextAlign.Start,
-                            color = Color(0xFFFFFFFF)
-                        )
-                        EditableField(label = "Name", value = viewModel.name)
-                        EditableField(label = "Email ID", value = viewModel.email)
-                        EditableField(label = "Country", value = viewModel.country)
-                        EditableField(label = "Phone Number", value = viewModel.phoneNumber)
+                                .width(120.dp)
+                                .height(40.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF06A0B5))
+                        ) {
+                            Text(
+                                text = "Log out",
+                                fontSize = 16.sp,
+                                color = Color(0xFFFFFFFF)
+                            )
+                        }
                     }
                 }
             }
         }
     }
+}
 
 @Composable
-fun EditableField(label: String, value: String) {
-    Row(
+fun DisplayField(label: String, value: String) {
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(vertical = 8.dp)
     ) {
-        OutlinedTextField(
-            value = value,
-            onValueChange = {}, // Handle the onValueChange for edit functionality
-            label = { Text(label, color = Color(0xFFFFFFFF)) },
-            modifier = Modifier.weight(1f)
+        Text(
+            text = label,
+            style = MaterialTheme.typography.body1,
+            color = Color(0xFFAAAAAA),
+            modifier = Modifier.padding(bottom = 4.dp)
         )
-        Icon(
-            imageVector = Icons.Default.Edit,
-            contentDescription = "Edit $label",
-            modifier = Modifier
-                .padding(start = 8.dp)
-                .size(24.dp),
-            tint = Color(0xFFFFFFFF)// Adjust size of the icon
+        Text(
+            text = value,
+            style = MaterialTheme.typography.h6,
+            color = Color.White
         )
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
